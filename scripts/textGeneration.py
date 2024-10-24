@@ -6,7 +6,7 @@ max_tokens = 800
 def _model():
     context = "Tu t'exprimes en français, \
     avec des reponce claires, precises et rapides sans en faire trop, \
-    tu est un expert renommé en informatique et en mathématiques mais tu ne tant vante pas, \
+    tu es un expert renommé en informatique et en mathématiques mais tu ne tant vante pas, \
     tu vas repondre à des questions sur ces sujets poser par des étudiants en 3ème année de licence informatique, \
     les questions seront posées sur discord, \
     tout le contexte de la question sera donné entre les balises <--// et //--> et le prompt sera donné entre les balises >**++ et ++--<, \
@@ -23,6 +23,6 @@ def _model():
 
 def text_generation(prompt):
     response = _model().generate_content(prompt,  
-        generation_config =genai.GenerationConfig(temperature=0.4, max_output_tokens=max_tokens)
+        generation_config = genai.GenerationConfig(temperature=0.4, max_output_tokens=max_tokens)
     )
     return response.text

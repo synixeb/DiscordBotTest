@@ -9,41 +9,41 @@ bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 @bot.event
 async def on_ready():
     print(f'Connecter en tant que {bot.user}')
+    await bot.change_presence(activity=discord.Game(name="aider les étudiant"))
     log("Bot connecté", "Bot", 1)
 
-@bot.command()
-async def note(ctx : commands.Context):
-    url = makeURL(ctx.author.name)
-    if url != None:
-        tab = readXML(url)
-        await ctx.send("La dernière note ajoutée est:")
-        await ctx.send(f"Intitulé: {tab[0]}")
-        await ctx.send(f"Auteur: {tab[1]}")
-        log("Note envoyée", ctx.author.name, 1)
-    else:
-        await ctx.send("Cette étudiant n'existe pas")
-        log("L'étudiant n'existe pas", ctx.author.name, 2)
-        
 
-@bot.command()
-async def saymyname(ctx : commands.Context):
-    await ctx.send(ctx.author.name)
-    log("Help", ctx.author.name, 0)
-
-
-@bot.command()
-async def noteV(ctx : commands.Context):
+async def send_note_info(ctx: commands.Context, note_func):
+    try:
         url = makeURL(ctx.author.name)
-        if url != None:
-            tab = readXMLNote(url)
-            await ctx.send("La dernière note ajoutée est:")
-            await ctx.send(f"Titre: {tab[0]}")
-            await ctx.send(f"Intitulé: {tab[1]}")
-            await ctx.send(f"Auteur:{tab[2]}")
-            log("Note envoyée", ctx.author.name, 1)
+        if url:
+            print(url)
+            tab, isNote = note_func(url)
+            if tab == []:
+                await ctx.send("Aucune note n'a été ajoutée")
+                log("Aucune note n'a été ajoutée", ctx.author.name)
+                return
+            else:
+                await ctx.send("La dernière note ajoutée est:")
+                await ctx.send(f"Titre: {tab[0]}")
+                await ctx.send(f"Intitulé: {tab[1]}")
+                if isNote:
+                    await ctx.send(f"Auteur: {tab[2]}")
+                log("Note envoyée", ctx.author.name)
         else:
-            await ctx.send("Cette étudiant n'existe pas")
-            log("L'étudiant n'existe pas", ctx.author.name, 2)
+            raise Exception("Cet étudiant n'existe pas")
+    except Exception as e:
+        await ctx.send(str(e))
+        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordXGemini/issues) sur le repo GitHub")
+        log(e, ctx.author.name, 2)
+
+@bot.command()
+async def note(ctx: commands.Context):
+    await send_note_info(ctx, readXML)
+
+@bot.command()
+async def noteV(ctx: commands.Context):
+    await send_note_info(ctx, readXMLNote)
 
 
 @bot.command()
@@ -63,6 +63,7 @@ async def talk(ctx: commands.Context, *args):
         print(e)
         await ctx.send("Désole, je n'ai pas pu générer de texte")
         await ctx.send("Surement la faute à un mauvais developpeur")
+        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordXGemini/issues) sur le repo GitHub")
         log(f"Context Prompt: ({prompt}) / X", ctx.author.name, 2)
 
 if __name__ == '__main__':

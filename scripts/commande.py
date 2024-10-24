@@ -5,7 +5,7 @@ import os
 import re
 
 
-fichierLog = os.getenv('fichierLog')
+fichierLog = os.getenv('FICHIER_LOG')
 
 def makeURL(nom):
     url = "https://tomuss.univ-lyon1.fr/S/2024/Printemps/rss/"

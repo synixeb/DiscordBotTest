@@ -3,7 +3,7 @@ from discord.ext import commands
 from scripts.commande import *
 from scripts.textGeneration import *
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("TOKEN_DISCORD")
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
 @bot.event

@@ -33,7 +33,7 @@ async def send_note_info(ctx: commands.Context, note_func):
             raise Exception("Cet étudiant n'existe pas")
     except Exception as e:
         await ctx.send(str(e))
-        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordXGemini/issues) sur le repo GitHub")
+        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordBotTest/issues) sur le repo GitHub")
         log(e, ctx.author.name, 3)
 
 @bot.command()

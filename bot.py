@@ -44,6 +44,12 @@ async def note(ctx: commands.Context):
 async def noteV(ctx: commands.Context):
     await send_note_info(ctx, readXMLNote)
 
+@bot.command()
+async def help(ctx: commands.Context):
+    await ctx.send("`/help` : Renvoie les commandes disponible")
+    await ctx.send("`/note` : Renvoie l'intitude de la dernière note ajoutée sur Tommus (la note n'est pas affichée) (ne fonctionne pas)")
+    await ctx.send("`/noteV` : Renvoie la dernière note ajoutée sur le site de Tommus (ne fonctionne pas)")
+    await ctx.send("/talk` : Renvoie une réponse à une question posée avec le contexte de la question (fonctionne)")
 
 @bot.command()
 async def talk(ctx: commands.Context, *args):

@@ -14,7 +14,7 @@ def makeURL(nom):
         url += code_etudiant
         return url
     else:
-        raise Exception("Cette étudiant n'existe pas")
+        return null
 
 
 def readXMLNote(url):
@@ -22,17 +22,15 @@ def readXMLNote(url):
     last = []
     res = requests.get(url)
     root = ET.fromstring(res.content)
-    print("1")
     for child in root.iter('item'):
-        print("2")
         titre = child.find('title').text
         description = child.find('description').text
         table.append([titre, description])
 
     for t in table:
         if re.match(r'[A-Za-z0-9]{1,}:[0-9]{2,}\.[0-9]{2,}/[0-9]{1,}', t[1]):
+            last[0] = removeHtmlBalise(last[0])
             last[1] = removeHtmlBalise(last[1])
-            last[2] = removeHtmlBalise(last[2])
     return last, True
 
 

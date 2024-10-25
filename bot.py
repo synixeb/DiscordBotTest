@@ -22,7 +22,6 @@ async def send_note_info(ctx: commands.Context, note_func):
             if tab == []:
                 await ctx.send("Aucune note n'a été ajoutée")
                 log("Aucune note n'a été ajoutée", ctx.author.name)
-                return
             else:
                 await ctx.send("La dernière note ajoutée est:")
                 await ctx.send(f"Titre: {tab[0]}")
@@ -35,7 +34,7 @@ async def send_note_info(ctx: commands.Context, note_func):
     except Exception as e:
         await ctx.send(str(e))
         await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordXGemini/issues) sur le repo GitHub")
-        log(e, ctx.author.name, 2)
+        log(e, ctx.author.name, 3)
 
 @bot.command()
 async def note(ctx: commands.Context):

@@ -3,6 +3,8 @@ from discord.ext import commands
 from scripts.commande import *
 from scripts.textGeneration import *
 
+import Error.DiscordExecp as DiscordExecp
+
 TOKEN = os.getenv("TOKEN_DISCORD")
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
@@ -30,26 +32,22 @@ async def send_note_info(ctx: commands.Context, note_func):
                     await ctx.send(f"Auteur: {tab[2]}")
                 log("Note envoyée", ctx.author.name)
         else:
-            raise Exception("Cet étudiant n'existe pas")
+            raise Exception("Erreur lors de la récupération de l'url")
     except Exception as e:
-        await ctx.send(str(e))
-        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordBotTest/issues) sur le repo GitHub")
-        log(e, ctx.author.name, 3)
+        print(e)
+        log("Erreur lors de la récupération de la note", ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, e).send_error()
+
 
 @bot.command()
 async def note(ctx: commands.Context):
     await send_note_info(ctx, readXML)
 
+
 @bot.command()
 async def noteV(ctx: commands.Context):
     await send_note_info(ctx, readXMLNote)
 
-@bot.command()
-async def help(ctx: commands.Context):
-    await ctx.send("`/help` : Renvoie les commandes disponible")
-    await ctx.send("`/note` : Renvoie l'intitude de la dernière note ajoutée sur Tommus (la note n'est pas affichée) (ne fonctionne pas)")
-    await ctx.send("`/noteV` : Renvoie la dernière note ajoutée sur le site de Tommus (ne fonctionne pas)")
-    await ctx.send("/talk` : Renvoie une réponse à une question posée avec le contexte de la question (fonctionne)")
 
 @bot.command()
 async def talk(ctx: commands.Context, *args):
@@ -66,10 +64,43 @@ async def talk(ctx: commands.Context, *args):
         log(f"Context Prompt: ({prompt}) / V", ctx.author.name, 1)
     except Exception as e:
         print(e)
-        await ctx.send("Désole, je n'ai pas pu générer de texte")
-        await ctx.send("Surement la faute à un mauvais developpeur")
-        await ctx.send("Pour vous plaindre auprès du développeur, créez une [issue](https://github.com/synixeb/DiscordXGemini/issues) sur le repo GitHub")
         log(f"Context Prompt: ({prompt}) / X", ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, e).send_error()
+
+
+@bot.command()
+async def salle(ctx: commands.Context, *args):
+    try:
+        filter_salle = []
+        if args[0] == "-":
+            filter_salle = args[1:]
+                
+        salles = get_salle_libre(filter_salle)
+        if salles == None:
+            raise Exception("Erreur lors de la récupération des salles")
+        elif salles == []:
+            await ctx.send("Aucune salle libre ;(")
+        else:
+            await ctx.send("Les salles libres sont:")
+            for salle in salles:
+                await ctx.send(salle + " " + data_salle[salle]["type"])
+            await ctx.send("Fin de la liste")
+        log("Salle envoyée", ctx.author.name)
+    except Exception as e:
+        print(e)
+        await DiscordExecp.DiscordExecp(ctx, e).send_error()
+
+
+@bot.command()
+async def helpme(ctx: commands.Context):
+    await ctx.send("`/helpme` : Renvoie les commandes disponible (fonctionne)\n" +
+    "`/note` : Renvoie l'intitude de la dernière note ajoutée sur Tommus (la note n'est pas affichée) (ne fonctionne pas) \n" +
+    "`/noteV` : Renvoie la dernière note ajoutée sur le site de Tommus (ne fonctionne pas)\n" +
+    "`/talk` : Renvoie une réponse à une question posée avec le contexte de la question (fonctionne)\n" +
+    "`/salle` : Renvoie les salles libres à l'heure actuelle (ne fonctionne pas)\n" +
+    "vous pouvez filtrez les salles en ajoutant un tiret suivi du filtre (ex: `/salle - S27`)\n" +
+    "ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)")
+
 
 if __name__ == '__main__':
     bot.run(TOKEN)

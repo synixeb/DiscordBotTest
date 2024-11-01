@@ -1,4 +1,4 @@
 .env
 .venv/
 fichier.log
-scripts/__pycache__/
+*/__pycache__/

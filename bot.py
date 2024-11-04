@@ -71,19 +71,23 @@ async def talk(ctx: commands.Context, *args):
 @bot.command()
 async def salle(ctx: commands.Context, *args):
     try:
+        print(args)
         filter_salle = []
-        if args[0] == "-":
-            filter_salle = args[1:]
-                
+        await ctx.send("Recherche des salles libres ...")
+        if len(args) > 0 and args[0] == "-":
+                filter_salle = args[1:]
+        await ctx.send("Chargement des salles ...")
         salles = get_salle_libre(filter_salle)
         if salles == None:
             raise Exception("Erreur lors de la récupération des salles")
         elif salles == []:
             await ctx.send("Aucune salle libre ;(")
         else:
+            msg = ""
             await ctx.send("Les salles libres sont:")
             for salle in salles:
-                await ctx.send(salle + " " + data_salle[salle]["type"])
+                msg += salle + " " + data_salle[salle]["type"] + "\n"
+            await ctx.send(msg)
             await ctx.send("Fin de la liste")
         log("Salle envoyée", ctx.author.name)
     except Exception as e:

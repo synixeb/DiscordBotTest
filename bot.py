@@ -58,7 +58,6 @@ async def talk(ctx: commands.Context, *args):
         prompt = ' '.join(args)
         full_prompt = f"Context: \n <--//{context}//--> \n\nPrompt:\n >**++{prompt}++--<"
         
-        # Generate text based on the full prompt
         text = text_generation(full_prompt)
         await ctx.send(text)
         log(f"Context Prompt: ({prompt}) / V", ctx.author.name, 1)
@@ -71,12 +70,10 @@ async def talk(ctx: commands.Context, *args):
 @bot.command()
 async def salle(ctx: commands.Context, *args):
     try:
-        print(args)
         filter_salle = []
-        await ctx.send("Recherche des salles libres ...")
         if len(args) > 0 and args[0] == "-":
                 filter_salle = args[1:]
-        await ctx.send("Chargement des salles ...")
+        await ctx.send("Recherche des salles libres ...")
         salles = get_salle_libre(filter_salle)
         if salles == None:
             raise Exception("Erreur lors de la récupération des salles")
@@ -97,13 +94,16 @@ async def salle(ctx: commands.Context, *args):
 
 @bot.command()
 async def helpme(ctx: commands.Context):
-    await ctx.send("`/helpme` : Renvoie les commandes disponible (fonctionne)\n" +
-    "`/note` : Renvoie l'intitude de la dernière note ajoutée sur Tommus (la note n'est pas affichée) (ne fonctionne pas) \n" +
-    "`/noteV` : Renvoie la dernière note ajoutée sur le site de Tommus (ne fonctionne pas)\n" +
-    "`/talk` : Renvoie une réponse à une question posée avec le contexte de la question (fonctionne)\n" +
-    "`/salle` : Renvoie les salles libres à l'heure actuelle (ne fonctionne pas)\n" +
-    "vous pouvez filtrez les salles en ajoutant un tiret suivi du filtre (ex: `/salle - S27`)\n" +
-    "ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)")
+    msg = ""
+    msg +="`/helpme` : Renvoie les commandes disponible (fonctionne)\n"
+    msg +="`/note` : Renvoie l'intitude de la dernière note ajoutée sur Tommus (la note n'est pas affichée) (ne fonctionne pas) \n"
+    msg +="`/noteV` : Renvoie la dernière note ajoutée sur le site de Tommus (ne fonctionne pas)\n"
+    msg +="`/talk` : Renvoie une réponse à une question posée avec le contexte de la question (fonctionne)\n"
+    msg +="`/salle` : Renvoie les salles libres à l'heure actuelle (ne fonctionne pas)\n"
+    msg +="vous pouvez filtrez les salles en ajoutant un tiret suivi du filtre (ex: `/salle - S27`)\n"
+    msg +="ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)"
+    await ctx.send(msg)
+    log("Aide demandée", ctx.author.name)
 
 
 if __name__ == '__main__':

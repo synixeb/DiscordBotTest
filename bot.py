@@ -106,7 +106,7 @@ async def helpme(ctx: commands.Context):
     msg +="ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)"
     await ctx.send(msg)
     if PROJET_URL != None:
-        await ctx.send("Mais vous pouvez aussi m'aider à m'améliorer en participant au projet [issue]({PROJET_URL})")
+        await ctx.send("Mais vous pouvez aussi m'aider à m'améliorer en participant au [projet]({})".format(PROJET_URL))
     log("Aide demandée", ctx.author.name)
 
 

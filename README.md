@@ -23,10 +23,11 @@ pip install -r requirements.txt
 GENERATIVEAI_API_KEY = YOUR_API_KEY_FOR_GEMINI
 TOKEN = YOUR_TOKEN_FOR_DISCORD
 FICHIER_LOG = le_nom_de_votre_fichier_log_depuis_la_racine_du_projet
-ISSUE_URL = url_des_issues_de_votre_projet
+PROJET_URL = url_de_votre_projet
+RELATIF_VERS_ISSUE = chemin_vers_issue
 nom_dutilisateur_discord = code_rss_de_tomuss
 ```
-4. Remplacer `token` par le token de votre bot discord et le token de l'API de Gemini
+4. Remplacer toutes les valeurs par les votres
 5. Lancer le bot
 ```bash
 python bot.py

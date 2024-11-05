@@ -6,6 +6,8 @@ from scripts.textGeneration import *
 import Error.DiscordExecp as DiscordExecp
 
 TOKEN = os.getenv("TOKEN_DISCORD")
+PROJET_URL = os.getenv("PROJET_URL")
+
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
 @bot.event
@@ -103,6 +105,8 @@ async def helpme(ctx: commands.Context):
     msg +="vous pouvez filtrez les salles en ajoutant un tiret suivi du filtre (ex: `/salle - S27`)\n"
     msg +="ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)"
     await ctx.send(msg)
+    if PROJET_URL != None:
+        await ctx.send("Mais vous pouvez aussi m'aider à m'améliorer en participant au projet [issue]({PROJET_URL})")
     log("Aide demandée", ctx.author.name)
 
 

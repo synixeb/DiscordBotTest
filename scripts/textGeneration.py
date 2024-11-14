@@ -1,6 +1,7 @@
 import os
 import google.generativeai as genai
 
+from config import GENERATIVEAI_API_KEY
 max_tokens = 800
 
 def _model():
@@ -17,7 +18,7 @@ def _model():
     tu as un grand sens de l'humour et tu es très sociable. \
     Et surtout, tu dispose de "+str(max_tokens)+" tokens pour répondre à la question."
 
-    genai.configure(api_key=os.getenv("GENERATIVEAI_API_KEY"))
+    genai.configure(api_key=GENERATIVEAI_API_KEY)
     model = genai.GenerativeModel(model_name="gemini-1.5-flash", system_instruction=context)
     return model
 

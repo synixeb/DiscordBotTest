@@ -7,15 +7,14 @@ import xml.etree.ElementTree as ET
 from ics import Calendar
 
 from Data.donnees import data_salle
-
+from config import FICHIER_LOG, LIEN_RSS_TOMUSS
 
 regexNote = r'[A-Za-z0-9]{1,}:[0-9]{2,}\.[0-9]{2,}/[0-9]{1,}'
 
-fichierLog = os.getenv('FICHIER_LOG')
 
 def makeURL(nom):
+    url = LIEN_RSS_TOMUSS
     nom = nom.upper()
-    url = "https://tomuss.univ-lyon1.fr/S/2024/Printemps/rss/"
     code_etudiant = os.getenv(nom)
     if code_etudiant != None:
         url += code_etudiant
@@ -64,7 +63,7 @@ def readXMLNote(url):
         return last, True
     except Exception as e:
         print(e)
-        return [], True
+        return e, True
 
 def readXML(url):
     try:
@@ -88,7 +87,7 @@ def readXML(url):
         return last, False
     except Exception as e:
         print(e)
-        return [], False
+        return e, False
 
 def tronquer (chain, char):
     if chain.count(char) % 2 == 0:
@@ -105,18 +104,18 @@ def removeHtmlBalise(string):
     return string
 
 def log(message, author, niveau=1):
-    switcher = {
-        0: "DEBUG",
-        1: "INFO",
-        2: "WARNING",
-        3: "ERROR",
-        4: "CRITICAL",
-        5: "FATAL"
-    }
-    niveau = switcher.get(niveau)
-    Date = datetime.datetime.now()
-
-    msg = f"({Date}) / {niveau} : {author} : {message}"
-    print(msg)
-    with open(fichierLog, "a") as f:
-        f.write(msg + "\n")
+    if FICHIER_LOG != None:
+        switcher = {
+            0: "DEBUG",
+            1: "INFO",
+            2: "WARNING",
+            3: "ERROR",
+            4: "CRITICAL",
+            5: "FATAL"
+        }
+        niveau = switcher.get(niveau)
+        Date = datetime.datetime.now()
+        msg = f"({Date}) | {niveau} : {author} : {message}"
+        print(msg)
+        with open(FICHIER_LOG, "a") as f:
+            f.write(msg + "\n")

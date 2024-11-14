@@ -4,9 +4,7 @@ from scripts.commande import *
 from scripts.textGeneration import *
 
 import Error.DiscordExecp as DiscordExecp
-
-TOKEN = os.getenv("TOKEN_DISCORD")
-PROJET_URL = os.getenv("PROJET_URL")
+from config import TOKEN_DISCORD, PROJET_URL
 
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
@@ -20,10 +18,11 @@ async def on_ready():
 async def send_note_info(ctx: commands.Context, note_func):
     try:
         url = makeURL(ctx.author.name)
-        if url:
-            print(url)
+        if isinstance(url, str):
             tab, isNote = note_func(url)
-            if tab == []:
+            if isinstance(tab, str):
+                raise Exception(tab)
+            elif tab == []:
                 await ctx.send("Aucune note n'a été ajoutée")
                 log("Aucune note n'a été ajoutée", ctx.author.name)
             else:
@@ -36,9 +35,8 @@ async def send_note_info(ctx: commands.Context, note_func):
         else:
             raise Exception("Erreur lors de la récupération de l'url")
     except Exception as e:
-        print(e)
-        log("Erreur lors de la récupération de la note", ctx.author.name, 2)
-        await DiscordExecp.DiscordExecp(ctx, e).send_error()
+        log(e, ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, "Erreur lors de la récupération de la note").send_error()
 
 
 @bot.command()
@@ -64,9 +62,8 @@ async def talk(ctx: commands.Context, *args):
         await ctx.send(text)
         log(f"Context Prompt: ({prompt}) / V", ctx.author.name, 1)
     except Exception as e:
-        print(e)
-        log(f"Context Prompt: ({prompt}) / X", ctx.author.name, 2)
-        await DiscordExecp.DiscordExecp(ctx, e).send_error()
+        log(e ,ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, f"Context Prompt: ({prompt}) / X").send_error()
 
 
 @bot.command()
@@ -90,7 +87,16 @@ async def salle(ctx: commands.Context, *args):
             await ctx.send("Fin de la liste")
         log("Salle envoyée", ctx.author.name)
     except Exception as e:
-        print(e)
+        log(e,ctx.author.name,3)
+        await DiscordExecp.DiscordExecp(ctx, "Erreur lors de la recuperation des salles").send_error()
+
+
+@bot.command()
+async def err(ctx: commands.Context):
+    try:
+        raise Exception("Test du format des erreurs")
+    except Exception as e:
+        log(e, ctx.author.name, 0)
         await DiscordExecp.DiscordExecp(ctx, e).send_error()
 
 
@@ -111,4 +117,4 @@ async def helpme(ctx: commands.Context):
 
 
 if __name__ == '__main__':
-    bot.run(TOKEN)
+    bot.run(TOKEN_DISCORD)

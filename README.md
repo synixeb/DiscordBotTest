@@ -10,6 +10,7 @@ Il s'agit d'un bot discord codé en python.<br>Il est capable de répondre à de
 - `/salle` : Renvoie les salles libres à l'heure actuelle.<br>
 Vous pouvez filtrez les salles en ajoutant un tiret suivi du filtre (ex: `/salle - S27`)
 ou les types de salles (ex: `/salle - TD `) mais aussi les deux (ex: `/salle - TD S27`)
+- `/prof [nom du professeur] [heure(optionel)]` : Renvoie les salles libres à l'heure actuelle pour un professeur donné.<br>
 
 ## Installation
 1. Installer les dépendances

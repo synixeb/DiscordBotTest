@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree as ET
 from ics import Calendar
 
-from Data.donnees import data_salle
+from Data.donnees import data_salle, profs
 from config import FICHIER_LOG, LIEN_RSS_TOMUSS
 
 regexNote = r'[A-Za-z0-9]{1,}:[0-9]{2,}\.[0-9]{2,}/[0-9]{1,}'
@@ -44,6 +44,24 @@ def get_salle_libre(filter_salle):
     except Exception as e:
         print(e)
         return None
+
+def get_prof_location(name, hour = ""):
+    try:
+        Today = datetime.datetime.now().strftime('%Y-%m-%d')
+        if hour == "" :
+            hour = datetime.datetime.now().hour
+        url = ("https://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources="
+                + profs[name] + "&projectId=0&calType=ical&firstDate=" + Today + "&lastDate=" + Today)
+        res = requests.get(url)
+        if res.status_code == 200:
+            calendar = Calendar(res.text)
+            for event in calendar.events:
+                if event.begin.datetime.hour <= hour < event.end.datetime.hour:
+                    return event.location
+        return None
+    except Exception as e:
+        print(e)
+        return 0
 
 def readXMLNote(url):
     try:

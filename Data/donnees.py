@@ -129,6 +129,27 @@ data_salle = {
     }
 }
 
+profs = {
+    "watrigant": "1035",
+    "jaloux": "25677",
+    "adellan": "7569",
+    "aidel": "5931",
+    "bessac": "16076",
+    "braiki": "6913",
+    "canque": "7096",
+    "deboute": "13619",
+    "duchene": "3374",
+    "faci": "8457",
+    "faivre": "12640",
+    "goncalves": "2813",
+    "joubert": "18821",
+    "mbarek": "26612",
+    "moll": "96510",
+    "olivesi": "2297",
+    "peytavie": "18072",
+    "tabchiche": "84306",
+}
+
 jour = {
     0: {
         "trad": "Lundi"

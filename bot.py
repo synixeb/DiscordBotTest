@@ -5,7 +5,7 @@ from scripts.textGeneration import *
 
 import Error.DiscordExecp as DiscordExecp
 from config import TOKEN_DISCORD, PROJET_URL
-
+from Data.donnees import profs
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
 @bot.event
@@ -90,6 +90,31 @@ async def salle(ctx: commands.Context, *args):
         log(e,ctx.author.name,3)
         await DiscordExecp.DiscordExecp(ctx, "Erreur lors de la recuperation des salles").send_error()
 
+@bot.command()
+async def prof(ctx: commands.Context, nom: str, *args):
+    try:
+        if nom.lower() not in profs:
+            raise Exception("Le professeur n'existe pas")
+        if len(args) > 0 and args[0].isdigit() and 0 <= int(args[0]) < 24:
+            msg = f"A {args[0]}h {nom.capitalize()} sera en "
+            location = get_prof_location(nom.lower(), int(args[0]))
+        else:
+            msg = f"{nom.capitalize()} est en "
+            location = get_prof_location(nom.lower())
+        if location == 0:
+            raise Exception("Erreur lors de la récupération de la localisation")
+        elif location == None:
+            await ctx.send(f"{nom.capitalize()} n'a pas de cours à cette heure")
+            log(nom+" n'a pas de cours à cette heure", ctx.author.name)
+        else:
+            await ctx.send(msg + location)
+            log("Localisation de "+nom+" envoyée", ctx.author.name)
+    except ValueError as e:
+        log(e, ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, "L'argument fourni pour l'heure n'est pas un entier valide").send_error()
+    except Exception as e:
+        log(e, ctx.author.name, 2)
+        await DiscordExecp.DiscordExecp(ctx, "Erreur de récupération de la localisation de "+nom).send_error()
 
 @bot.command()
 async def err(ctx: commands.Context):
